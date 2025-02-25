@@ -1,12 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
 
-const useTimer = () => {
-  const [time, setTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
+interface TimerHook {
+  time: number;
+  isRunning: boolean;
+  startTimer: () => void;
+  stopTimer: () => void;
+  resetTimer: () => void;
+}
+
+const useTimer = (): TimerHook => {
+  const [time, setTime] = useState<number>(0);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  const startTimer = () => {
+  const startTimer = (): void => {
     if (!isRunning) {
       setIsRunning(true);
       startTimeRef.current = Date.now() - time;
@@ -16,7 +24,7 @@ const useTimer = () => {
     }
   };
 
-  const stopTimer = () => {
+  const stopTimer = (): void => {
     if (isRunning) {
       setIsRunning(false);
       if (intervalRef.current) {
@@ -25,7 +33,7 @@ const useTimer = () => {
     }
   };
 
-  const resetTimer = () => {
+  const resetTimer = (): void => {
     setIsRunning(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);

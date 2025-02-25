@@ -3,7 +3,7 @@ import './index.css';
 import useTimer from './hooks/useTimer';
 import formatTime from './utils/formatTime';
 
-const App = () => {
+const App: React.FC = () => {
   const { time, isRunning, startTimer, stopTimer, resetTimer } = useTimer();
 
   return (
