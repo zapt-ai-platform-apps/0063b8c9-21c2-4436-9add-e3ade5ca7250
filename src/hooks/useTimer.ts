@@ -1,53 +1,39 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
-interface TimerHook {
-  time: number;
-  isRunning: boolean;
-  startTimer: () => void;
-  stopTimer: () => void;
-  resetTimer: () => void;
-}
-
-const useTimer = (): TimerHook => {
-  const [time, setTime] = useState<number>(0);
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const startTimeRef = useRef<number>(0);
-
-  const startTimer = (): void => {
-    if (!isRunning) {
-      setIsRunning(true);
-      startTimeRef.current = Date.now() - time;
-      intervalRef.current = setInterval(() => {
-        setTime(Date.now() - startTimeRef.current);
-      }, 10);
-    }
-  };
-
-  const stopTimer = (): void => {
-    if (isRunning) {
-      setIsRunning(false);
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
-  };
-
-  const resetTimer = (): void => {
-    setIsRunning(false);
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    setTime(0);
-  };
+const useTimer = () => {
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
-      if (intervalRef.current) {
+      if (intervalRef.current !== null) {
         clearInterval(intervalRef.current);
       }
     };
   }, []);
+
+  const startTimer = useCallback(() => {
+    if (!isRunning) {
+      setIsRunning(true);
+      intervalRef.current = window.setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+  }, [isRunning]);
+
+  const stopTimer = useCallback(() => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setIsRunning(false);
+  }, []);
+
+  const resetTimer = useCallback(() => {
+    stopTimer();
+    setTime(0);
+  }, [stopTimer]);
 
   return { time, isRunning, startTimer, stopTimer, resetTimer };
 };

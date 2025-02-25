@@ -1,9 +1,13 @@
-const formatTime = (time: number): string => {
-  const milliseconds = ("0" + (Math.floor(time % 1000) / 10).toFixed(0)).slice(-2);
-  const seconds = ("0" + Math.floor((time / 1000) % 60)).slice(-2);
-  const minutes = ("0" + Math.floor((time / 60000) % 60)).slice(-2);
-  const hours = Math.floor(time / 3600000);
-  return `${hours > 0 ? hours + ':' : ''}${minutes}:${seconds}.${milliseconds}`;
+const formatTime = (time: number) => {
+  const seconds = time % 60;
+  const minutes = Math.floor(time / 60) % 60;
+  const hours = Math.floor(time / 3600);
+
+  const formattedSeconds = seconds.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  const formattedHours = hours > 0 ? `${hours.toString().padStart(2, '0')}:` : '';
+
+  return `${formattedHours}${formattedMinutes}:${formattedSeconds}`;
 };
 
 export default formatTime;
