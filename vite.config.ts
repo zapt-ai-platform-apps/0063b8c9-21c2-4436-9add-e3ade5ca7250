@@ -14,7 +14,7 @@ export default defineConfig({
   ],
   build: {
     target: 'esnext',
-    polyfillDynamicImport: false,
+    // Removed polyfillDynamicImport as it's deprecated
     sourcemap: true
   },
   resolve: {
